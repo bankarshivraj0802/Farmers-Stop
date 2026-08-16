@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Farmers' Stop</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="index-page">
+  <header>
+    <h1>Welcome to Farmers' Stop</h1>
+    <nav>
+      <a href="{{ url_for('login_page') }}">Login</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Fresh Vegetables, Direct from Farmers</h2>
+    <p>Healthy produce delivered to your doorstep.</p>
+    <button onclick="window.location.href='{{ url_for('login_page') }}'">Get Started</button>
+  </section>
+</body>
+</html>

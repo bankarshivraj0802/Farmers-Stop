@@ -1,0 +1,56 @@
+[
+    {
+        "name": "Shivraj Bankar",
+        "flat": "401",
+        "society": "Park Street",
+        "contact": "9854271589",
+        "vegetables": {
+            "Tomato": "2",
+            "Onion": "",
+            "Potato": "1.5",
+            "Spinach": "",
+            "Carrot": "",
+            "Cabbage": "2.5",
+            "Peas": "",
+            "Cauliflower": ""
+        },
+        "status": "Delivered",
+        "total_amount": 147.5
+    },
+    {
+        "name": "Kevin",
+        "flat": "102",
+        "society": "Park Aster",
+        "contact": "9876543210",
+        "vegetables": {
+            "Tomato": "1",
+            "Onion": "2",
+            "Potato": "1",
+            "Spinach": "",
+            "Carrot": "",
+            "Cabbage": "",
+            "Peas": "0.5",
+            "Cauliflower": ""
+        },
+        "status": "Delivered",
+        "total_amount": 140.0
+    },
+    {
+        "name": "Paula",
+        "flat": "302",
+        "society": "Park Street",
+        "contact": "9787653412",
+        "vegetables": {
+            "Tomato": "",
+            "Onion": "",
+            "Potato": "",
+            "Spinach": "2",
+            "Carrot": "",
+            "Cabbage": "",
+            "Peas": "",
+            "Cauliflower": ""
+        },
+        "status": "Pending",
+        "total_amount": 30.0
+    }
+]

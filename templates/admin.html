@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard</h1>
+    <nav>
+      <a href="{{ url_for('farmer_page') }}">Vegetable Stock</a>
+      <a href="{{ url_for('admin_page') }}">Admin Orders</a>
+      <a href="{{ url_for('index') }}">Back to Home</a>
+    </nav>
+  </header>
+
+  <section class="admin">
+    <h2>All Orders</h2>
+    <table id="ordersTable" class="orders-table">
+      <thead>
+        <tr>
+          <th>Customer Name</th>
+          <th>Address</th>
+          <th>Contact Number</th>
+          <th>Vegetables List</th>
+          <th>Total Amount (₹)</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <script>
+    fetch("/orders")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#ordersTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach((order, index) => {
+          const address = `${order.flat}, ${order.society}`;
+          const vegList = Object.entries(order.vegetables || {})
+            .filter(([veg, qty]) => qty > 0)
+            .map(([veg, qty]) => `<li>${veg}: ${qty}</li>`)
+            .join("");
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${order.name}</td>
+            <td>${address}</td>
+            <td>${order.contact}</td>
+            <td><ul>${vegList}</ul></td>
+            <td>₹${order.total_amount || 0}</td>
+            <td>
+              <select onchange="updateStatus(${index}, this.value)">
+                <option value="Pending" ${order.status === "Pending" ? "selected" : ""}>Pending</option>
+                <option value="Delivered" ${order.status === "Delivered" ? "selected" : ""}>Delivered</option>
+              </select>
+            </td>
+            <td><button onclick="cancelOrder(${index})">Cancel</button></td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+
+    function updateStatus(orderId, status) {
+      fetch(`/update-status/${orderId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status })
+      }).then(res => res.json()).then(data => alert(data.message));
+    }
+
+    function cancelOrder(orderId) {
+      fetch(`/delete-order/${orderId}`, { method: "DELETE" })
+        .then(res => res.json())
+        .then(data => alert(data.message));
+    }
+  </script>
+</body>
+</html>

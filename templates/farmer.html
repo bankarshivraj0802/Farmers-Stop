@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Farmer Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Farmer Dashboard</h1>
+    <nav>
+      <a href="{{ url_for('farmer_page') }}">Vegetable Stock</a>
+      <a href="{{ url_for('admin_page') }}">Admin Orders</a>
+      <a href="{{ url_for('index') }}">Back to Home</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Manage Vegetables</h2>
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Vegetable</th>
+          <th>Status</th>
+          <th>Change Status</th>
+          <th>Price (₹)</th>
+          <th>Update Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for veg, details in vegetables.items() %}
+        <tr>
+          <td>{{ veg }}</td>
+          <td>{{ details.status }}</td>
+          <td>
+            <select onchange="updateStock('{{ veg }}', this.value)">
+              <option value="In-Stock" {% if details.status=='In-Stock' %}selected{% endif %}>In-Stock</option>
+              <option value="Out-Of-Stock" {% if details.status=='Out-Of-Stock' %}selected{% endif %}>Out-Of-Stock</option>
+            </select>
+          </td>
+          <td>
+            <input type="number" id="price-{{ veg }}" class="price-input" value="{{ details.price }}" step="0.5">
+          </td>
+          <td>
+            <button onclick="updatePrice('{{ veg }}')">Save</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    function updateStock(veg, status) {
+      fetch("/update-stock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vegetable: veg, status: status })
+      }).then(res => res.json()).then(data => alert(data.message));
+    }
+
+    function updatePrice(veg) {
+      const price = document.getElementById("price-" + veg).value;
+      fetch("/update-price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vegetable: veg, price: price })
+      }).then(res => res.json()).then(data => alert(data.message));
+    }
+  </script>
+</body>
+</html>

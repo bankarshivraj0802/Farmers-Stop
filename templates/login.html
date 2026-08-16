@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Farmers' Stop</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="login-page">
+  <div class="login-form">
+    <h2>Select Role</h2>
+    <form method="POST" action="{{ url_for('login_page') }}">
+      <label>
+        <input type="radio" name="role" value="farmer" required> Farmer
+      </label>
+      <label>
+        <input type="radio" name="role" value="customer" required> Customer
+      </label>
+      <br><br>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>

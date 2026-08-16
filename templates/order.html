@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Vegetables</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="order-page">
+  <header>
+    <h1>Order Vegetables</h1>
+    <nav>
+      <a href="{{ url_for('index') }}">Back to Home</a>
+    </nav>
+  </header>
+
+  <form class="order-form" id="orderForm">
+    <h2>Place Your Order</h2>
+    {% for veg, details in vegetables.items() %}
+      <label>{{ veg }} ({{ 'kg' if veg not in ['Spinach'] else 'units' }}):</label>
+      <input type="number" id="{{ veg }}" min="0" step="{{ '0.5' if veg not in ['Spinach'] else '1' }}"><br><br>
+    {% endfor %}
+    <label>Name:</label><input type="text" id="name" required><br><br>
+    <label>Flat:</label><input type="text" id="flat" required><br><br>
+    <label>Society:</label><input type="text" id="society" required><br><br>
+    <label>Contact:</label><input type="text" id="contact" required><br><br>
+    <button type="button" onclick="submitOrder()">Submit Order</button>
+  </form>
+
+  <!-- Order Summary Modal -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('orderModal').style.display='none'">&times;</span>
+      <h2>Order Summary</h2>
+      <div id="orderSummary"></div>
+    </div>
+  </div>
+
+  <script>
+    function submitOrder() {
+      const vegetables = {};
+      {% for veg, details in vegetables.items() %}
+        vegetables["{{ veg }}"] = document.getElementById("{{ veg }}").value;
+      {% endfor %}
+
+      const order = {
+        name: document.getElementById("name").value,
+        flat: document.getElementById("flat").value,
+        society: document.getElementById("society").value,
+        contact: document.getElementById("contact").value,
+        vegetables: vegetables
+      };
+
+      fetch("/submit-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order)
+      })
+      .then(res => res.json())
+      .then(data => {
+        const summary = document.getElementById("orderSummary");
+        summary.innerHTML = `
+          <p><strong>Name:</strong> ${data.order.name}</p>
+          <p><strong>Address:</strong> ${data.order.flat}, ${data.order.society}</p>
+          <p><strong>Contact:</strong> ${data.order.contact}</p>
+          <p><strong>Total Amount:</strong> ₹${data.order.total_amount}</p>
+          <h3>Vegetables Ordered:</h3>
+          <ul>
+            ${Object.entries(data.order.vegetables).map(([veg, qty]) => qty > 0 ? `<li>${veg}: ${qty}</li>` : "").join("")}
+          </ul>
+        `;
+        document.getElementById("orderModal").style.display = "block";
+      });
+    }
+  </script>
+</body>
+</html>
